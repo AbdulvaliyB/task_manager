@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  sql:
+    init:
+      mode: never
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  datasource:
+    username: postgres
+    password: hellomy1q
+    url: jdbc:postgresql://localhost:5432/task_manager
+    driver-class-name: org.postgresql.Driver
