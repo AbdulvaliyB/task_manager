@@ -36,7 +36,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody TaskDTO taskDTO) {
         ApiResponse response = taskService.add(taskDTO);
-        return ResponseEntity.status(response.isSuccess() ? 400 : 200).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 400).body(response);
     }
 
     @PutMapping("/{id}")
