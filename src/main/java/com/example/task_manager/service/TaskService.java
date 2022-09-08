@@ -38,7 +38,7 @@ public class TaskService {
     }
 
 
-    public ApiResponse put(Long id, TaskDTO taskDTO) {
+    public ApiResponse edit(Long id, TaskDTO taskDTO) {
         Optional<Task> byId = taskRepository.findById(id);
         Task task = byId.get();
 

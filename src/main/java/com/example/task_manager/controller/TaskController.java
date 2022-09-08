@@ -41,7 +41,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> edit(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
-        ApiResponse response = taskService.put(id, taskDTO);
+        ApiResponse response = taskService.edit(id, taskDTO);
         return ResponseEntity.status(response.isSuccess() ? 200 : 400).body(response);
     }
 }
