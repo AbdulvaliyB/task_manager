@@ -13,3 +13,6 @@ spring:
     password: hellomy1q
     url: jdbc:postgresql://localhost:5432/task_manager
     driver-class-name: org.postgresql.Driver
+logging:
+  level:
+    root: debug
