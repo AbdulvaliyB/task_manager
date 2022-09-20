@@ -15,4 +15,13 @@ spring:
     driver-class-name: org.postgresql.Driver
 logging:
   level:
-    root: debug
+    root: warn
+    org:
+      springframework: info
+    com:
+      example:
+        task_manager: debug
+  pattern:
+    dateformat: dd-MM-yyyy
+  file:
+    name: app.log
