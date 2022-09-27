@@ -14,8 +14,8 @@ import java.util.List;
 @Data
 public class UserDTO {
 
-    private String firstname;
-    private String surname;
+    private String username;
+    private String role;
     private Long phoneNumber;
     private String address;
     private List<Task> taskList;

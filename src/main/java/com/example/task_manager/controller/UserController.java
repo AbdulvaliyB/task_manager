@@ -26,8 +26,14 @@ public class UserController {
     }
 
     @GetMapping("/min")
-    public ResponseEntity<?> getMin() {
+    public ResponseEntity<?> getAllMin() {
         ApiResponse response = userService.getUserTaskProjection();
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+    }
+
+    @GetMapping("/min/{id}")
+    public ResponseEntity<?> getMin(@PathVariable Long id) {
+        ApiResponse response = userService.getUserTaskProjection(id);
         return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 

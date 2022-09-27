@@ -1,5 +1,7 @@
 server:
   port: 8080
+  error:
+    include-message: always
 spring:
   sql:
     init:
@@ -25,3 +27,6 @@ logging:
     dateformat: dd-MM-yyyy
   file:
     name: app.log
+jwt:
+  secretKey: SupperKey
+  expireTime: 86400000

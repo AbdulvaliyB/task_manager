@@ -1,4 +1,4 @@
-package com.example.task_manager.projection;
+package com.example.task_manager.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TaskProjection {
-
-    private String title;
-
-    private String description;
+public class LoginDTO {
+    private String userName;
+    private String password;
 }
