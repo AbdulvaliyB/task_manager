@@ -1,6 +1,5 @@
 package com.example.task_manager.config;
 
-
 import com.example.task_manager.entity.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

@@ -8,7 +8,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @ToString
 @Entity
-@Data
+@Getter
+@Setter
 public class Task {
 
     @Id

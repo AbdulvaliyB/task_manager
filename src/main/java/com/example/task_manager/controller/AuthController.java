@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Column;
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -33,13 +31,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public HttpEntity<?> login(@RequestBody LoginDTO loginDTO){
-        UserDetails userDetails = authService.loadUserByUsername(loginDTO.getUserName());
+        UserDetails userDetails = authService.loadUserByUsername(loginDTO.getUsername());
 
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDTO.getUserName(),loginDTO.getPassword()));
+                loginDTO.getUsername(),loginDTO.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token=jwtProvider.generateToken(loginDTO.getUserName());
+        String token=jwtProvider.generateToken(loginDTO.getUsername());
         return ResponseEntity.ok().body(token);
     }
 

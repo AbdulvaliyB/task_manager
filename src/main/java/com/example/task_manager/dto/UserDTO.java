@@ -5,18 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class UserDTO {
+    private String username, password, email, phoneNumber;
 
-    private String username;
-    private String role;
-    private Long phoneNumber;
-    private String address;
-    private List<Task> taskList;
+    private String role; //ROle.User moderator
+    private List<Long> taskIdList;
+
 }

@@ -1,32 +1,58 @@
+#server:
+#  port: 8080
+#  error:
+#    include-message: always
+#spring:
+#  main:
+#    allow-bean-definition-overriding: true
+#  sql:
+#    init:
+#      mode: never
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    show-sql: true
+#  datasource:
+#    username: postgres
+#    password: hellomy1q
+#    url: jdbc:postgresql://localhost:5432/task_manager
+#    driver-class-name: org.postgresql.Driver
+#logging:
+#  level:
+#    root: warn
+#    org:
+#      springframework: info
+#    com:
+#      example:
+#        task_manager: debug
+#  pattern:
+#    dateformat: dd-MM-yyyy
+#  file:
+#    name: app.log
+#jwt:
+#  secretKey: SupperKey
+#  expireTime: 86400000
+jwt:
+  secretKey: SupperKey
+  expireTime: 86400000
 server:
   port: 8080
   error:
     include-message: always
 spring:
-  sql:
-    init:
-      mode: never
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
+  main:
+    allow-bean-definition-overriding: true
   datasource:
+    driver-class-name: org.postgresql.Driver
     username: postgres
     password: hellomy1q
     url: jdbc:postgresql://localhost:5432/task_manager
-    driver-class-name: org.postgresql.Driver
-logging:
-  level:
-    root: warn
-    org:
-      springframework: info
-    com:
-      example:
-        task_manager: debug
-  pattern:
-    dateformat: dd-MM-yyyy
-  file:
-    name: app.log
-jwt:
-  secretKey: SupperKey
-  expireTime: 86400000
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+

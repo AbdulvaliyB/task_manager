@@ -6,11 +6,13 @@ import com.example.task_manager.entity.Role;
 import com.example.task_manager.entity.Task;
 import com.example.task_manager.entity.User;
 import com.example.task_manager.entity.enums.RoleEnum;
-import com.example.task_manager.projection.TaskProjection;
-import com.example.task_manager.projection.UserTaskProjection;
 import com.example.task_manager.repository.RoleRepository;
+import com.example.task_manager.repository.TaskRepository;
 import com.example.task_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,18 +20,32 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
+
+
     final RoleRepository roleRepository;
 
     public ApiResponse add(UserDTO userDTO) {
-
+        LOG.debug("User Service >> Create User {}",userDTO);
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setAddress(userDTO.getAddress());
-        user.setTaskList(userDTO.getTaskList());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        RoleEnum roleEnum=RoleEnum.valueOf(userDTO.getRole());
+        List<Task> taskList =new ArrayList<>();
+        for (Long taskId : userDTO.getTaskIdList()) {
+            Optional<Task> task = taskRepository.findById(taskId);
+            Task task1 = task.get();
+            taskList.add(task1);
+        }
+
+        user.setTaskList(taskList);
+
+        RoleEnum roleEnum = RoleEnum.valueOf(userDTO.getRole());
         Optional<Role> byRoleName = roleRepository.findByRoleName(roleEnum);
         user.setRoleList(new LinkedHashSet(Collections.singleton(byRoleName.get())));
 
@@ -38,28 +54,48 @@ public class UserService {
     }
 
     public ApiResponse getOne(Long id) {
-        Optional<User> byId = userRepository.findById(id);
-        User user = byId.get();
+        LOG.debug("User Service >> Find User By Id{}",id);
+        User user;
+        try {
+            Optional<User> byId = userRepository.findById(id);
+            user = byId.get();
+        }catch (Exception e){
+            return ApiResponse.builder().message("Not Found").success(false).build();
+        }
+
         return ApiResponse.builder().message("Get This").success(true).object(user).build();
     }
 
     public ApiResponse getAll() {
         List<User> userList = userRepository.findAll();
-        return ApiResponse.builder().message("Get This").success(true).object(userList).build();
+        LOG.debug("User Service >> Find All Users {}",userList);
+        return ApiResponse.builder().message("Get This All").success(true).object(userList).build();
     }
 
 
     public ApiResponse edit(Long id, UserDTO userDTO) {
-        Optional<User> byId = userRepository.findById(id);
-        User user = byId.get();
-
+        LOG.debug("User Service >> Find User By Id {} And Editing It {}",id,userDTO);
+        User user;
+        try {
+            Optional<User> byId = userRepository.findById(id);
+            user = byId.get();
+        }catch (Exception e){
+            return ApiResponse.builder().message("Not Found").success(false).build();
+        }
         user.setUsername(userDTO.getUsername());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setAddress(userDTO.getAddress());
-        user.setTaskList(userDTO.getTaskList());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
+        List<Task> taskList = new ArrayList<>();
+        for (Long taskId : userDTO.getTaskIdList()) {
+            Optional<Task> task = taskRepository.findById(taskId);
+            taskList.add(task.get());
+        }
 
-        RoleEnum roleEnum=RoleEnum.valueOf(userDTO.getRole());
+        user.setTaskList(taskList);
+
+        RoleEnum roleEnum = RoleEnum.valueOf(userDTO.getRole());
         Optional<Role> byRoleName = roleRepository.findByRoleName(roleEnum);
         user.setRoleList(new LinkedHashSet(Collections.singleton(byRoleName.get())));
 
@@ -68,60 +104,13 @@ public class UserService {
     }
 
     public ApiResponse delete(Long id) {
-        userRepository.deleteById(id);
+        LOG.debug("User Service >> Delete User By Id{}",id);
+        try {
+            userRepository.deleteById(id);
+        }catch (Exception e){
+            return ApiResponse.builder().message("Not Found").success(false).build();
+        }
         return ApiResponse.builder().message("Deleted").success(true).build();
     }
 
-    public ApiResponse getUserTaskProjection(Long id) {
-
-        Optional<User> byId = userRepository.findById(id);
-
-        UserTaskProjection userTaskProjection = new UserTaskProjection();
-        List<TaskProjection> taskProjectionList = new ArrayList<>();
-
-        for (Task t : byId.get().getTaskList()) {
-            TaskProjection taskProjection = new TaskProjection();
-
-            taskProjection.setTitle(t.getTitle());
-            taskProjection.setDescription(t.getDescription());
-
-            taskProjectionList.add(taskProjection);
-        }
-
-
-        userTaskProjection.setUsername(byId.get().getUsername());
-        userTaskProjection.setPhoneNumber(byId.get().getPhoneNumber());
-        userTaskProjection.setTaskProjectionList(taskProjectionList);
-
-
-        return ApiResponse.builder().message("here").object(userTaskProjection).success(true).build();
-    }
-
-    public ApiResponse getUserTaskProjection() {
-        List<User> users = userRepository.findAll();
-
-        List<UserTaskProjection> userTaskProjectionList = new ArrayList<>();
-
-        for (User user: users) {
-            UserTaskProjection userTaskProjection = new UserTaskProjection();
-
-            List<TaskProjection> taskProjectionList = new ArrayList<>();
-            for (Task t :user.getTaskList()) {
-                TaskProjection taskProjection = new TaskProjection();
-                taskProjection.setTitle(t.getTitle());
-                taskProjection.setDescription(t.getDescription());
-
-                taskProjectionList.add(taskProjection);
-            }
-
-            userTaskProjection.setUsername(user.getUsername());
-            userTaskProjection.setPhoneNumber(user.getPhoneNumber());
-            userTaskProjection.setTaskProjectionList(taskProjectionList);
-
-            userTaskProjectionList.add(userTaskProjection);
-
-        }
-
-        return ApiResponse.builder().message("here").object(userTaskProjectionList).success(true).build();
-    }
 }

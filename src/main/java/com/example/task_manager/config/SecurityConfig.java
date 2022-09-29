@@ -1,5 +1,6 @@
 package com.example.task_manager.config;
 
+
 import com.example.task_manager.security.JwtFilter;
 import com.example.task_manager.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;

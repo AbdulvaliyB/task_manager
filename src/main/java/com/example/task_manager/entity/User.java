@@ -1,49 +1,40 @@
 package com.example.task_manager.entity;
 
+
 import com.example.task_manager.entity.enums.PermissionEnum;
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-@AllArgsConstructor
-@ToString
-@Table(name = "users")
 @Entity
+@Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(length = 15)
-    private String username;
-
-    @Column(length = 15)
-    private String password;
-
-
-    @Column(length = 12)
-    private Long phoneNumber;
-
-    @Column(length = 10)
-    private String address;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<Task> taskList;
+    private String username, password, email,phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
 //    @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roleList; //user_roleList
+
+    @OneToMany
+    private List<Task> taskList;
+
+    @Transient //bazada column ochilmaydi frontga qaytaradi
+//    private int age = LocalDate.now().getYear() -birthDate.getYear();
 
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
@@ -67,20 +58,10 @@ public class User implements UserDetails {
             }
         }
 
+        //preauthorize hasRole
+//        for (Role role : this.roleList) {
+//            authorities.add(role.getRoleName());
+//        }
         return authorities;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return id != null && Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
 }
